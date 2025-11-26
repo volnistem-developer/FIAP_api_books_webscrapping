@@ -1,4 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
+from src.api.service.role_service import ServiceRole
+from src.interfaces.service.service_role_interface import IServiceRole
 
 router = APIRouter(prefix="/v1/roles")
 
@@ -6,4 +9,6 @@ router = APIRouter(prefix="/v1/roles")
 class RoleController:
     @router.get("/")
     def list():
-        return {"teste"}
+        service = ServiceRole()
+
+        return service.list_all()
