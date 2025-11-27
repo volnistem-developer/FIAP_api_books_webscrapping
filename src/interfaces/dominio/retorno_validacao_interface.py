@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 
+from src.dominio.exceptions import AppException
+
 
 class IRetornoValidacao(ABC):
     @abstractmethod
-    def add_exception(self, ex: Exception) -> None:
+    def add_exception(self, ex: AppException) -> None:
         pass
 
     @abstractmethod
@@ -11,5 +13,5 @@ class IRetornoValidacao(ABC):
         pass
 
     @abstractmethod
-    def get_exceptions(self) -> list[Exception]:
+    def get_exceptions(self) -> list[AppException]:
         pass

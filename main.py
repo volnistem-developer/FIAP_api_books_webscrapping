@@ -1,6 +1,10 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from fastapi.openapi.utils import get_openapi
 
-from src.api.controllers.v1.role_controller import router
+from src.anticorrupcao.pydantic_validation_handler import pydantic_validation_handler
+from src.api.controllers.v1.role_controller import router as role_router
+from src.api.controllers.v1.user_controller import router as user_router
 from src.dados.database.base import Base
 from src.dados.database.db import engine
 
@@ -8,4 +12,30 @@ app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
-app.include_router(router)
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title="Minha API",
+        version="1.0.0",
+        description="API sem responses automáticas do Pydantic",
+        routes=app.routes,
+    )
+
+    # remove 422 globalmente
+    for path in openapi_schema["paths"].values():
+        for method in path.values():
+            method.get("responses", {}).pop("422", None)
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.include_router(role_router)
+app.include_router(user_router)
+
+app.add_exception_handler(RequestValidationError, pydantic_validation_handler)
+
+app.openapi = custom_openapi

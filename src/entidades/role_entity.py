@@ -6,7 +6,7 @@ from src.dados.database.base import Base
 
 
 class RoleEntity(Base):
-    __tablename__ = "users"
+    __tablename__ = "roles"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(20), unique=True, nullable=False)
