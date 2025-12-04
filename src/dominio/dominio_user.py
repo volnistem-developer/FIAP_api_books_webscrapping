@@ -7,20 +7,19 @@ from src.dominio.exceptions import (
     InfraException,
     NotFoundException,
 )
-from src.entidades.role_entity import RoleEntity
+from src.entidades.user_entity import UserEntity
 from src.interfaces.dominio.retorno_validacao_interface import IRetornoValidacao
-from src.interfaces.infraestrutura.repositorio_role_interface import IRepositorioRole
+from src.interfaces.infraestrutura.repositorio_user_interface import IRepositorioUser
 
-
-class DominioRole(DominioBase):
+class DominioUser(DominioBase):
     def __init__(
-        self, repositorio: IRepositorioRole, retorno_validacao: IRetornoValidacao
+        self, repositorio: IRepositorioUser, retorno_validacao: IRetornoValidacao
     ) -> None:
         super().__init__(retorno_validacao)
         self.__repositorio = repositorio
 
-    def list(self) -> list[RoleEntity]:
-        retorno: list[RoleEntity] = []
+    def list(self) -> list[UserEntity]:
+        retorno: list[UserEntity] = []
 
         try:
             retorno = self.__repositorio.list()
@@ -28,14 +27,14 @@ class DominioRole(DominioBase):
         except BusinessException as ex:
             self.retorno_validacao.add_exception(ex)
 
-        except Exception:
+        except Exception as ex:
             self.retorno_validacao.add_exception(
-                InfraException("Erro ao acessar a base de dados")
+                InfraException(str(ex))
             )
 
         return retorno
     
-    def get(self, id: int) -> RoleEntity:
+    def get(self, id: int) -> UserEntity:
         retorno = None
 
         try:
@@ -51,8 +50,8 @@ class DominioRole(DominioBase):
             )
         
         return retorno
-
-    def insert(self, entidade: RoleEntity) -> RoleEntity | None:
+    
+    def insert(self, entidade: UserEntity) -> UserEntity | None:
         retorno = None
 
         try:
@@ -60,7 +59,7 @@ class DominioRole(DominioBase):
 
         except IntegrityError:
             self.retorno_validacao.add_exception(
-                ConflictException("Já existe um cargo com esse nome")
+                ConflictException("Já existe um usuário com esse email")
             )
 
         except Exception:
@@ -82,9 +81,9 @@ class DominioRole(DominioBase):
         except Exception:
             self.retorno_validacao.add_exception(
                 InfraException("Erro ao acessar a base de dados")
-            )
+                )
 
-    def update(self, id: int, name: str) -> RoleEntity:
+    def update(self, id: int, name: str) -> UserEntity:
         retorno = None
 
         try:
