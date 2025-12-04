@@ -3,7 +3,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 
 from src.anticorrupcao.pydantic_validation_handler import pydantic_validation_handler
-from src.api.controllers.v1.role_controller import router as role_router
 from src.api.controllers.v1.user_controller import router as user_router
 from src.dados.database.base import Base
 from src.dados.database.db import engine
@@ -18,9 +17,9 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title="Minha API",
+        title="Books Webscrapping API",
         version="1.0.0",
-        description="API sem responses automáticas do Pydantic",
+        description="API para raspagem e entraga de dados para o cliente.",
         routes=app.routes,
     )
 
@@ -33,7 +32,6 @@ def custom_openapi():
     return app.openapi_schema
 
 
-app.include_router(role_router)
 app.include_router(user_router)
 
 app.add_exception_handler(RequestValidationError, pydantic_validation_handler)
