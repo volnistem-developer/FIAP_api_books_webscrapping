@@ -7,17 +7,16 @@ from src.infraestrutura.repositorio_user import RepositorioUser
 class AplicacaoUser():
     def __init__(self) -> None:
         self.__retorno = DominioRetornoValidacao()
-        self.__repo = RepositorioUser()
-
-        self.dominio = DominioUser(
-            repositorio=self.__repo, retorno_validacao=self.__retorno
-        )
+        self.dominio = DominioUser(retorno_validacao=self.__retorno)
 
     def list_all(self) -> list[UserEntity]:
         return self.dominio.list()
     
     def get_by_id(self, id: int) -> UserEntity:
         return self.dominio.get(id)
+    
+    def get_by_username(self, username: str) -> UserEntity:
+        return self.dominio.get_by_username(username)
 
     def insert_user(self, entidade: UserEntity) -> UserEntity | None:
         return self.dominio.insert(entidade)

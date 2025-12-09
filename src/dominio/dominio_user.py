@@ -8,15 +8,15 @@ from src.dominio.exceptions import (
     NotFoundException,
 )
 from src.entidades.user_entity import UserEntity
+from src.infraestrutura.repositorio_user import RepositorioUser
 from src.interfaces.dominio.retorno_validacao_interface import IRetornoValidacao
-from src.interfaces.infraestrutura.repositorio_user_interface import IRepositorioUser
 
 class DominioUser(DominioBase):
     def __init__(
-        self, repositorio: IRepositorioUser, retorno_validacao: IRetornoValidacao
+        self, retorno_validacao: IRetornoValidacao
     ) -> None:
         super().__init__(retorno_validacao)
-        self.__repositorio = repositorio
+        self.__repositorio = RepositorioUser()
 
     def list(self) -> list[UserEntity]:
         retorno: list[UserEntity] = []
@@ -51,16 +51,40 @@ class DominioUser(DominioBase):
         
         return retorno
     
+    def get_by_username(self, username: str) -> UserEntity:
+        retorno = None
+
+        try: 
+            retorno = self.__repositorio.get_by_username(username)
+
+        except NoResultFound:
+            self.retorno_validacao.add_exception(
+                NotFoundException("Registro não encontrado")
+            )
+        except Exception:
+            self.retorno_validacao.add_exception(
+                InfraException("Erro ao acessar a base de dados")
+            )
+        
+        return retorno
+
     def insert(self, entidade: UserEntity) -> UserEntity | None:
         retorno = None
 
         try:
             retorno = self.__repositorio.insert(entidade)
 
-        except IntegrityError:
-            self.retorno_validacao.add_exception(
-                ConflictException("Já existe um usuário com esse email")
-            )
+        except IntegrityError as e:
+            msg = str(e.orig).lower()
+
+            if "email" in msg: 
+                self.retorno_validacao.add_exception(
+                    ConflictException("Já existe um usuário com esse email")
+                )
+            elif "username" in msg:
+                self.retorno_validacao.add_exception(
+                    ConflictException("Já existe um usuário com esse username")
+                )
 
         except Exception:
             self.retorno_validacao.add_exception(
