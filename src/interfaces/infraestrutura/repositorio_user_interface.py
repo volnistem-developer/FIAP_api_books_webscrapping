@@ -10,6 +10,8 @@ class IRepositorioUser(ABC):
     @abstractmethod
     def get(self, id: int) -> UserEntity: pass
 
+    def get_by_username(self, username: str) -> UserEntity: pass
+
     @abstractmethod
     def insert(self, entity: UserEntity) -> UserEntity: pass
 

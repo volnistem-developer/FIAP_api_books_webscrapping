@@ -18,6 +18,8 @@ class ConflictException(AppException):
 class NotFoundException(AppException):
     status_code = 404
 
+class InvalidCredentialsException(AppException):
+    status_code = 400
 
 class InfraException(AppException):
     status_code = 500

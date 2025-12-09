@@ -14,6 +14,12 @@ class RepositorioUser(IRepositorioUser):
 
             return entity
     
+    def get_by_username(self, username: str) -> UserEntity:
+        with Database() as db:
+            entity = db.query(UserEntity).filter(UserEntity.username == username).one()
+
+            return entity
+    
     def insert(self, entity: UserEntity) -> UserEntity:
         with Database() as db:
             db.add(entity)

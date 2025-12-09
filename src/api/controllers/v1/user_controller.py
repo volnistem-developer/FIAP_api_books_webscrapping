@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from src.api.middlewares.auth_middleware import ProtectedRoute
+from src.api.security.decorators import protected
+
 from src.api.service.user_service import ServiceUser
 from src.dtos.user_dto import UserCreateDTO, UserIdDTO, UserReadDTO, UserUpdateDTO
 
-router = APIRouter(prefix="/v1/users", tags=["User"])
+router = APIRouter(prefix="/api/v1/users", tags=["User"], route_class=ProtectedRoute)
 
 
 @router.get("/", status_code=200, response_model=list[UserReadDTO])
+@protected()
 def list_all_users():
     service = ServiceUser()
 
@@ -22,6 +26,7 @@ def list_all_users():
     return retorno
 
 @router.get("/{id}", status_code=200, response_model=UserReadDTO)
+@protected()
 def get_user_by_id(params: UserIdDTO = Depends()):
     role_id = params.id
 
@@ -51,6 +56,7 @@ def insert_user(user: UserCreateDTO):
     return retorno
 
 @router.delete("/{id}", status_code=204)
+@protected()
 def delete_user(params: UserIdDTO = Depends()):
     role_id = params.id
 
@@ -65,6 +71,7 @@ def delete_user(params: UserIdDTO = Depends()):
     return 
 
 @router.put("/{id}", status_code=200, response_model=UserReadDTO)
+@protected()
 def update_user(id:int, user: UserUpdateDTO):
 
     service = ServiceUser()

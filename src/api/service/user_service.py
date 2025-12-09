@@ -1,15 +1,15 @@
-from passlib.context import CryptContext
 
+from src.anticorrupcao.auth.jwt_security import JWTSecurity
 from src.aplicacao.aplicacao_user import AplicacaoUser
 from src.dtos.user_dto import UserCreateDTO, UserReadDTO
 from src.entidades.user_entity import UserEntity
 
 
 class ServiceUser:
-    '''Transformar Entidade -> para DTO para retornar para a controller'''
 
     def __init__(self) -> None:
         self.aplicacao = AplicacaoUser()
+        self.__jwt_security = JWTSecurity()
 
     def list_all(self):
         retorno = self.aplicacao.list_all()
@@ -25,14 +25,13 @@ class ServiceUser:
     
     
     def insert_user(self, dto: UserCreateDTO):
-
-        bcrypt_context = CryptContext(schemes=['argon2'])
+        
 
         entidade = UserEntity(
             name=dto.name,
             username=dto.username,
             email=dto.email,
-            password=bcrypt_context.hash(dto.password),
+            password=self.__jwt_security.hash_password(dto.password),
         )
 
         retorno = self.aplicacao.insert_user(entidade)
