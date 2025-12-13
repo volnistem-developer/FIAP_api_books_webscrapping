@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 
-from src.anticorrupcao.pydantic.pydantic_validation_handler import pydantic_validation_handler
+from src.infraestrutura.service.pydantic.pydantic_validation_handler import pydantic_validation_handler
 from src.api.controllers.v1.user_controller import router as user_router
 from src.api.controllers.v1.user_auth_controller import router as user_auth_router
-from src.dados.database.base import Base
-from src.dados.database.db import engine
+from src.data.database.base import Base
+from src.data.database.db import engine
 
 app = FastAPI()
 

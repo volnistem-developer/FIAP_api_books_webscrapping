@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from src.api.configuration.dependency_injection_config import services
 from src.api.middlewares.auth_middleware import ProtectedRoute
-from src.api.security.decorators import protected
+from src.api.configuration.protected_security_decorator import protected
 
-from src.api.service.user_service import ServiceUser
 from src.dtos.user_dto import UserCreateDTO, UserIdDTO, UserReadDTO, UserUpdateDTO
 
 router = APIRouter(prefix="/api/v1/users", tags=["User"], route_class=ProtectedRoute)
@@ -12,16 +12,13 @@ router = APIRouter(prefix="/api/v1/users", tags=["User"], route_class=ProtectedR
 @router.get("/", status_code=200, response_model=list[UserReadDTO])
 @protected()
 def list_all_users():
-    service = ServiceUser()
 
-    retorno = service.list_all()
+    retorno = services.user_service.list_all()
 
-    if service.has_exceptions():
-        erros = service.get_exceptions()
+    if len(services.user_service.validation) > 0:   
+        ex = services.user_service.validation[0]   
 
-        erro = erros[0]
-
-        raise HTTPException(status_code=erro.status_code, detail=erro.message)
+        raise HTTPException(status_code=ex.status_code, detail=ex.message)
 
     return retorno
 
@@ -30,28 +27,24 @@ def list_all_users():
 def get_user_by_id(params: UserIdDTO = Depends()):
     role_id = params.id
 
-    service = ServiceUser()
-    retorno = service.get_by_id(role_id)
+    retorno = services.user_service.get_by_id(role_id)
 
-    if(service.has_exceptions()):
-        erro = service.get_exceptions()[0]
+    if len(services.user_service.validation) > 0:   
+        ex = services.user_service.validation[0]   
 
-        raise HTTPException(status_code=erro.status_code, detail=erro.message)
-    
+        raise HTTPException(status_code=ex.status_code, detail=ex.message)
+
     return retorno
 
 @router.post("/", response_model=UserReadDTO , status_code=201)
 def insert_user(user: UserCreateDTO):
-    service = ServiceUser()
 
-    retorno = service.insert_user(user)
+    retorno = services.user_service.insert_user(user)
 
-    if service.has_exceptions():
-        erros = service.get_exceptions()
+    if len(services.user_service.validation) > 0:   
+        ex = services.user_service.validation[0]   
 
-        erro = erros[0]
-
-        raise HTTPException(status_code=erro.status_code, detail=erro.message)
+        raise HTTPException(status_code=ex.status_code, detail=ex.message)
 
     return retorno
 
@@ -60,26 +53,24 @@ def insert_user(user: UserCreateDTO):
 def delete_user(params: UserIdDTO = Depends()):
     role_id = params.id
 
-    service = ServiceUser()
-    service.delete_user(role_id)
+    services.user_service.delete_user(role_id)
 
-    if(service.has_exceptions()):
-        erro = service.get_exceptions()[0]
+    if len(services.user_service.validation) > 0:   
+        ex = services.user_service.validation[0]   
 
-        raise HTTPException(status_code=erro.status_code, detail=erro.message)
-    
-    return 
+        raise HTTPException(status_code=ex.status_code, detail=ex.message)
+
+    return
 
 @router.put("/{id}", status_code=200, response_model=UserReadDTO)
 @protected()
 def update_user(id:int, user: UserUpdateDTO):
 
-    service = ServiceUser()
-    retorno = service.update_user(id, user)
+    retorno = services.user_service.update_user(id, user)
 
-    if(service.has_exceptions()):
-        erro = service.get_exceptions()[0]
+    if len(services.user_service.validation) > 0:   
+        ex = services.user_service.validation[0]   
 
-        raise HTTPException(status_code=erro.status_code, detail=erro.message)
-    
+        raise HTTPException(status_code=ex.status_code, detail=ex.message)
+
     return retorno

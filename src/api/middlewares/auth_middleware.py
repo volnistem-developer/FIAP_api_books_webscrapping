@@ -1,8 +1,7 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
-from starlette.middleware.base import BaseHTTPMiddleware
-from src.anticorrupcao.auth.jwt_security import JWTSecurity
+from src.infraestrutura.service.jwt_security import JWTSecurity
 
 
 class ProtectedRoute(APIRoute):
@@ -21,7 +20,7 @@ class ProtectedRoute(APIRoute):
             auth_header = request.headers.get("Authorization")
 
             if not auth_header or not auth_header.startswith("Bearer "):
-                return JSONResponse({"detail": "Token não informado"}, status_code=status.HTTP_401_UNAUTHORIZED)
+                return JSONResponse({"detail": "Não autorizado"}, status_code=status.HTTP_401_UNAUTHORIZED)
             
             token = auth_header.split(" ", 1)[1].strip()
 
