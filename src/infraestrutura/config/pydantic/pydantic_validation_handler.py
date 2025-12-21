@@ -2,7 +2,7 @@ from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from src.infraestrutura.service.pydantic.pydantic_translate_messages import PydanticErrorsPT
+from src.infraestrutura.config.pydantic.pydantic_translate_messages import PydanticErrorsPT
 
 
 def translate_message(type_: str, ctx: dict | None) -> str:
@@ -31,4 +31,5 @@ async def pydantic_validation_handler(request: Request, exc: RequestValidationEr
 
         errors.append({field: message})
 
+    
     return JSONResponse(status_code=400, content={"erros": errors})

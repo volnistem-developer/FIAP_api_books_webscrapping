@@ -1,9 +1,8 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from src.dtos.token_dto import TokenDTO
-from src.interfaces.service.interface_service_base import IServiceBase
 
 
-class IServiceRefreshToken(IServiceBase):
+class IServiceRefreshToken(ABC):
 
     @abstractmethod
     def create_user_token(self, username: str, password:str) -> TokenDTO: pass

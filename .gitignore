@@ -3,3 +3,4 @@ storage.db
 .vscode
 .env
 venv
+public

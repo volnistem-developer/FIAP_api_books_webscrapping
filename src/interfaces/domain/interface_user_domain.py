@@ -1,9 +1,8 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from src.entity.user_entity import UserEntity
-from src.interfaces.domain.interface_base_domain import IBaseDomain
 
 
-class IUserDomain(IBaseDomain):
+class IUserDomain(ABC):
 
     @abstractmethod
     def list(self) -> list[UserEntity]: pass
@@ -21,4 +20,4 @@ class IUserDomain(IBaseDomain):
     def delete(self, id: int) -> None: pass
 
     @abstractmethod
-    def update(self, id: int, name: str) -> UserEntity: pass
+    def update(self, id: int, name: str, username: str, email: str) -> UserEntity: pass

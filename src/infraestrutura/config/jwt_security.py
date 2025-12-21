@@ -7,7 +7,7 @@ from typing import Optional
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
-from src.infraestrutura.service.env_config import ENV_CONFIG
+from src.infraestrutura.config.env_config import ENV_CONFIG
 
 class JWTSecurity:
     
