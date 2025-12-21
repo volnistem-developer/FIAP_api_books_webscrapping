@@ -1,54 +1,61 @@
-from src.data.database.db import Database
+from src.data.database.unity_of_work import UnityOfWork
 from src.entity.user_entity import UserEntity
 from src.interfaces.infrastructure.interface_user_repository import IUserRepository
 
 class UserRepository(IUserRepository):
 
-    def __init__(self, db_connection: Database):
-        self.__db_connection = db_connection
+    def __init__(self, uow: UnityOfWork):
+        self.uow = uow
 
-    def list(self):
-        with self.__db_connection as db:
-            return db.query(UserEntity).filter(UserEntity.active).all()
+    def list(self) -> list[UserEntity]:
+        return (
+            self.uow.session
+            .query(UserEntity)
+            .filter(UserEntity.active == True)
+            .all()
+        )
 
     def get(self, id: int) -> UserEntity:
-        with self.__db_connection as db:
-            entity = db.query(UserEntity).filter(UserEntity.id == id).one()
-
-            return entity
+        return (
+            self.uow.session
+            .query(UserEntity)
+            .filter(UserEntity.id == id)
+            .one()
+        )
     
     def get_by_username(self, username: str) -> UserEntity:
-        with self.__db_connection as db:
-            entity = db.query(UserEntity).filter(UserEntity.username == username).one()
-
-            return entity
+        return (
+            self.uow.session
+            .query(UserEntity)
+            .filter(UserEntity.username == username)
+            .one()
+        )
     
     def insert(self, entity: UserEntity) -> UserEntity:
-        with self.__db_connection as db:
-            db.add(entity)
-            db.commit()
-            db.expunge(entity)
-
-            return entity
+        self.uow.session.add(entity)
+        return entity
     
     def delete(self, id: int) -> None:
-        with self.__db_connection as db:
-            entity = db.query(UserEntity).filter(UserEntity.id == id and UserEntity.active).one()
+        entity = (
+            self.uow.session
+            .query(UserEntity)
+            .filter(UserEntity.id == id, UserEntity.active == True)
+            .one()
+        )
 
-            entity.active = False
-            
-            db.commit()
+        entity.active = False
     
-    def update(self, id, name, username, email) -> UserEntity:
-        with self.__db_connection as db:
-            entity = db.query(UserEntity).filter(UserEntity.id == id and UserEntity.active).one()
+    def update(self, id: int, name: str, username: str, email: str) -> UserEntity:
+        entity = (
+            self.uow.session
+            .query(UserEntity)
+            .filter(UserEntity.id == id, UserEntity.active == True)
+            .one()
+        )
 
-            entity.name = name
-            entity.username = username
-            entity.username = email
+        entity.name = name
+        entity.username = username
+        entity.email = email
 
-            db.commit()
-            db.expunge(entity)
-
-            return entity
+        return entity
     

@@ -1,13 +1,12 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from datetime import datetime
 from src.entity.refresh_token_entity import RefreshTokenEntity
-from src.interfaces.domain.interface_base_domain import IBaseDomain
 
 
-class IRefreshTokenDomain(IBaseDomain):
+class IRefreshTokenDomain(ABC):
 
     @abstractmethod
-    def create_refresh_token(self, token: str, user_id: int, expires_at: datetime) -> RefreshTokenEntity | None: pass
+    def create_refresh_token(self, token: str, user_id: int, expires_at: datetime) -> RefreshTokenEntity: pass
 
     @abstractmethod
     def get_refresh_token(self, token: str) -> RefreshTokenEntity: pass

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from src.api.configuration.dependency_injection_config import services
+from src.api.config.dependency_injection_config import services
 from src.api.middlewares.auth_middleware import ProtectedRoute
-from src.api.configuration.protected_security_decorator import protected
+from src.api.config.protected_security_decorator import protected
 
 from src.dtos.user_dto import UserCreateDTO, UserIdDTO, UserReadDTO, UserUpdateDTO
 
@@ -12,65 +12,44 @@ router = APIRouter(prefix="/api/v1/users", tags=["User"], route_class=ProtectedR
 @router.get("/", status_code=200, response_model=list[UserReadDTO])
 @protected()
 def list_all_users():
+    service, uow = services.user_service()
 
-    retorno = services.user_service.list_all()
-
-    if len(services.user_service.validation) > 0:   
-        ex = services.user_service.validation[0]   
-
-        raise HTTPException(status_code=ex.status_code, detail=ex.message)
-
-    return retorno
+    with uow:
+        return service.list_all()
 
 @router.get("/{id}", status_code=200, response_model=UserReadDTO)
 @protected()
 def get_user_by_id(params: UserIdDTO = Depends()):
+    service, uow = services.user_service()
+
     role_id = params.id
 
-    retorno = services.user_service.get_by_id(role_id)
-
-    if len(services.user_service.validation) > 0:   
-        ex = services.user_service.validation[0]   
-
-        raise HTTPException(status_code=ex.status_code, detail=ex.message)
-
-    return retorno
+    with uow:
+        return service.get_by_id(role_id)
 
 @router.post("/", response_model=UserReadDTO , status_code=201)
+@protected()
 def insert_user(user: UserCreateDTO):
+    service, uow = services.user_service()
 
-    retorno = services.user_service.insert_user(user)
-
-    if len(services.user_service.validation) > 0:   
-        ex = services.user_service.validation[0]   
-
-        raise HTTPException(status_code=ex.status_code, detail=ex.message)
-
-    return retorno
+    with uow:
+        return service.insert_user(user)
 
 @router.delete("/{id}", status_code=204)
 @protected()
 def delete_user(params: UserIdDTO = Depends()):
+    service, uow = services.user_service()
+
     role_id = params.id
 
-    services.user_service.delete_user(role_id)
-
-    if len(services.user_service.validation) > 0:   
-        ex = services.user_service.validation[0]   
-
-        raise HTTPException(status_code=ex.status_code, detail=ex.message)
-
-    return
+    with uow:
+        return service.delete_user(role_id)
 
 @router.put("/{id}", status_code=200, response_model=UserReadDTO)
 @protected()
 def update_user(id:int, user: UserUpdateDTO):
 
-    retorno = services.user_service.update_user(id, user)
+    service, uow = services.user_service()
 
-    if len(services.user_service.validation) > 0:   
-        ex = services.user_service.validation[0]   
-
-        raise HTTPException(status_code=ex.status_code, detail=ex.message)
-
-    return retorno
+    with uow:
+        return service.update_user(id, user)

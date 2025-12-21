@@ -20,4 +20,4 @@ class IUserRepository(ABC):
     def delete(self, id: int) -> None: pass
 
     @abstractmethod
-    def update(self, id: int, name: str) -> UserEntity: pass
+    def update(self, id: int, name: str, username: str, email: str) -> UserEntity: pass

@@ -1,7 +1,8 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
-from src.infraestrutura.service.jwt_security import JWTSecurity
+from src.exceptions.exceptions import UnauthorizedError
+from src.infraestrutura.config.jwt_security import JWTSecurity
 
 
 class ProtectedRoute(APIRoute):
@@ -20,7 +21,7 @@ class ProtectedRoute(APIRoute):
             auth_header = request.headers.get("Authorization")
 
             if not auth_header or not auth_header.startswith("Bearer "):
-                return JSONResponse({"detail": "Não autorizado"}, status_code=status.HTTP_401_UNAUTHORIZED)
+                raise UnauthorizedError("Não autorizado")
             
             token = auth_header.split(" ", 1)[1].strip()
 
@@ -28,7 +29,7 @@ class ProtectedRoute(APIRoute):
                 payload = JWTSecurity().decode_access_token(token)
             except Exception as e:
                 msg = getattr(e, "detail", str(e))
-                return JSONResponse({"detail": msg}, status_code=status.HTTP_401_UNAUTHORIZED)
+                raise UnauthorizedError("Não autorizado")
             
             request.state.user = payload
 

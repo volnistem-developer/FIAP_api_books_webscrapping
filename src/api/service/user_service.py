@@ -1,7 +1,7 @@
-from src.infraestrutura.service.jwt_security import JWTSecurity
-from src.dtos.user_dto import UserCreateDTO, UserReadDTO
+from src.infraestrutura.config.jwt_security import JWTSecurity
+from src.dtos.user_dto import UserCreateDTO, UserReadDTO, UserUpdateDTO
 from src.entity.user_entity import UserEntity
-from src.interfaces.application.interface_application_user import IUserApplication
+from src.interfaces.application.interface_user_application import IUserApplication
 from src.interfaces.service.interface_service_user import IServiceUser
 
 
@@ -10,55 +10,51 @@ class UserService(IServiceUser):
     def __init__(self, application: IUserApplication) -> None:
         self.application = application
         self.__jwt_security = JWTSecurity()
-    
-    @property
-    def validation(self):
-        return self.application.validation
 
     def list_all(self) -> list[UserReadDTO]:
-        response = self.application.list_all()
+        users = self.application.list_all()
+        return [self.__convert_entity_to_dto(e) for e in users]
 
-        users_list: list[UserReadDTO] = [self.__convert_entity_to_dto(e) for e in response]
+    def get_by_id(self, id: int) -> UserReadDTO | None:
+        entity = self.application.get_by_id(id)
 
-        return users_list
-    
-    def get_by_id(self, id:int) -> UserReadDTO | None:
-
-        response = self.application.get_by_id(id)
-
-        if response is None:
+        if entity is None:
             return None
 
-        return self.__convert_entity_to_dto(response)
-    
+        return self.__convert_entity_to_dto(entity)
+
     def insert_user(self, dto: UserCreateDTO) -> UserReadDTO | None:
-        
-        entidade = UserEntity(
+        entity = UserEntity(
             name=dto.name,
             username=dto.username,
             email=dto.email,
             password=self.__jwt_security.hash_password(dto.password),
         )
 
-        response = self.application.insert_user(entidade)
+        created = self.application.insert_user(entity)
 
-        if response is None:
+        if created is None:
             return None
-        else:
-            return self.__convert_entity_to_dto(response)
-    
-    def delete_user(self, id:int) -> None:
+
+        return self.__convert_entity_to_dto(created)
+
+    def delete_user(self, id: int) -> None:
         self.application.delete_user(id)
 
-    def update_user(self, id, dto: UserCreateDTO) -> UserReadDTO | None:
-        response = self.application.update_user(id, dto.name)
+    def update_user(self, id: int, dto: UserUpdateDTO) -> UserReadDTO | None:
+        updated = self.application.update_user(
+            id=id,
+            name=dto.name,
+            username=dto.username,
+            email=dto.email
+        )
 
-        if response is None:
+        if updated is None:
             return None
-        else:
-            return self.__convert_entity_to_dto(response)
-    
-    def __convert_entity_to_dto(self,entity: UserEntity) -> UserReadDTO:
+
+        return self.__convert_entity_to_dto(updated)
+
+    def __convert_entity_to_dto(self, entity: UserEntity) -> UserReadDTO:
         return UserReadDTO(
             id=entity.id,
             name=entity.name,

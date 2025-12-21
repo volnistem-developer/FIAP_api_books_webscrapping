@@ -1,10 +1,9 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from src.dtos.user_dto import UserCreateDTO, UserReadDTO
-from src.interfaces.service.interface_service_base import IServiceBase
 
 
-class IServiceUser(IServiceBase):
+class IServiceUser(ABC):
 
     @abstractmethod
     def list_all(self) -> list[UserReadDTO]: pass
