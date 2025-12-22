@@ -13,12 +13,7 @@ class RefreshTokenApplication(IRefreshTokenApplication):
         self.__domain = domain
         self.__logger = get_logger(self.__class__.__name__)
     
-    def create_refresh_token(
-        self,
-        token: str,
-        user_id: int,
-        expires_at: datetime
-    ) -> RefreshTokenEntity:
+    def create_refresh_token(self, token: str, user_id: int, expires_at: datetime) -> RefreshTokenEntity:
         self.__logger.info(
             f"Creating refresh token for user_id={user_id}, expires_at={expires_at}"
         )

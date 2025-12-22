@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from src.data.database.unity_of_work import UnityOfWork
 from src.entity.scrap_entity import EScrapStatus, ScrapEntity
 from src.infraestrutura.repository.book_repository import BookRepository
@@ -13,17 +14,13 @@ class ScrapRepository(IScrapRepository):
         self.book_repository: BookRepository | None = None
         self.category_repository: CategoryRepository | None = None
 
-    # 🔑 chamado pela Application/Domain
-    def attach_uow(self, uow: UnityOfWork):
+    def attach_uow(self, uow: UnityOfWork) -> None:
         self.uow = uow
         self.book_repository = BookRepository(uow)
         self.category_repository = CategoryRepository(uow)
 
-    # -------------------------
-    # JOB CONTROL
-    # -------------------------
 
-    def get_last_execution(self):
+    def get_last_execution(self) -> Optional[ScrapEntity]:
         return (
             self.uow.session
             .query(ScrapEntity)
@@ -40,18 +37,14 @@ class ScrapRepository(IScrapRepository):
         self.uow.session.flush()  # garante ID
         return entity
     
-    def mark_finished(self, entity: ScrapEntity):
+    def mark_finished(self, entity: ScrapEntity) -> None:
         entity.status = EScrapStatus.FINISHED
         entity.finished_at = datetime.utcnow()
 
-    def mark_error(self, entity: ScrapEntity, error: Exception):
+    def mark_error(self, entity: ScrapEntity, error: Exception) -> None:
         entity.status = EScrapStatus.ERROR
         entity.finished_at = datetime.utcnow()
         entity.error_message = str(error)
-
-    # -------------------------
-    # DATA PERSISTENCE
-    # -------------------------
 
     def save_category_with_books(self, category: dict, books: list[dict]) -> None:
         category_entity = self.category_repository.get_or_create(category["name"])

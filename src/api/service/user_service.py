@@ -1,3 +1,4 @@
+from typing import List, Optional
 from src.infraestrutura.config.jwt_security import JWTSecurity
 from src.dtos.user_dto import UserCreateDTO, UserReadDTO, UserUpdateDTO
 from src.entity.user_entity import UserEntity
@@ -11,11 +12,11 @@ class UserService(IServiceUser):
         self.application = application
         self.__jwt_security = JWTSecurity()
 
-    def list_all(self) -> list[UserReadDTO]:
+    def list_all(self) -> List[UserReadDTO]:
         users = self.application.list_all()
         return [self.__convert_entity_to_dto(e) for e in users]
 
-    def get_by_id(self, id: int) -> UserReadDTO | None:
+    def get_by_id(self, id: int) -> Optional[UserReadDTO]:
         entity = self.application.get_by_id(id)
 
         if entity is None:
@@ -23,7 +24,7 @@ class UserService(IServiceUser):
 
         return self.__convert_entity_to_dto(entity)
 
-    def insert_user(self, dto: UserCreateDTO) -> UserReadDTO | None:
+    def insert_user(self, dto: UserCreateDTO) -> Optional[UserReadDTO]:
         entity = UserEntity(
             name=dto.name,
             username=dto.username,
@@ -41,7 +42,7 @@ class UserService(IServiceUser):
     def delete_user(self, id: int) -> None:
         self.application.delete_user(id)
 
-    def update_user(self, id: int, dto: UserUpdateDTO) -> UserReadDTO | None:
+    def update_user(self, id: int, dto: UserUpdateDTO) -> Optional[UserReadDTO]:
         updated = self.application.update_user(
             id=id,
             name=dto.name,

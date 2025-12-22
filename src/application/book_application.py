@@ -1,3 +1,4 @@
+from typing import List
 from src.data.database.unity_of_work import UnityOfWork
 from src.entity.book_entity import BookEntity
 
@@ -11,7 +12,7 @@ class BookApplication(IBookApplication):
         self.__domain = domain
         self.__logger = get_logger(self.__class__.__name__)
 
-    def list_all_books(self, page: int, page_size: int):
+    def list_all_books(self, page: int, page_size: int) -> List[BookEntity]:
         self.__logger.info(
             f"Listing books (page={page}, page_size={page_size})"
         )
@@ -32,7 +33,7 @@ class BookApplication(IBookApplication):
                 )
                 raise
         
-    def get_all_books_most_rated(self, page: int, page_size: int):
+    def get_all_books_most_rated(self, page: int, page_size: int) -> List[BookEntity]:
         self.__logger.info(
             f"Listing most rated books (page={page}, page_size={page_size})"
         )
@@ -53,7 +54,7 @@ class BookApplication(IBookApplication):
                 )
                 raise
         
-    def get_book(self, id: int):
+    def get_book(self, id: int) -> BookEntity:
         self.__logger.info(f"Fetching book by id={id}")
 
         with UnityOfWork() as uow:
@@ -68,7 +69,7 @@ class BookApplication(IBookApplication):
                 self.__logger.exception(f"Error while fetching book (id={id})")
                 raise
         
-    def get_by_price_range(self, price_min: float, price_max: float):
+    def get_by_price_range(self, price_min: float, price_max: float) -> List[BookEntity]:
         self.__logger.info(
             f"Fetching books by price range (min={price_min}, max={price_max})"
         )
@@ -89,11 +90,7 @@ class BookApplication(IBookApplication):
                 )
                 raise
         
-    def get_books_from_title_or_category(
-        self,
-        title: str | None,
-        category: str | None
-    ):
+    def get_books_from_title_or_category(self, title: str | None, category: str | None) -> List[BookEntity]:
         self.__logger.info(
             f"Searching books (title={title}, category={category})"
         )

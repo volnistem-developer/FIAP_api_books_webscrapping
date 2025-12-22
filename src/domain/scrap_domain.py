@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Optional
 from src.data.database.unity_of_work import UnityOfWork
 from src.entity.scrap_entity import EScrapStatus, ScrapEntity
 from src.exceptions.exceptions import ServiceError
@@ -50,7 +51,7 @@ class ScrapDomain(IScrapDomain):
         except Exception as e:
             raise ServiceError("Erro ao finalizar scraping.") from e
 
-    def get_last_execution(self) -> ScrapEntity | None:
+    def get_last_execution(self) -> Optional[ScrapEntity]:
         try:
             return self.__repository.get_last_execution()
         except Exception as e:

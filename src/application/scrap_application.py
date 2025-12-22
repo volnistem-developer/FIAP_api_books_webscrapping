@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from src.infraestrutura.logging.logger import get_logger
 from src.data.database.unity_of_work import UnityOfWork
 from src.interfaces.application.interface_scrap_application import IScrapApplication
@@ -11,7 +12,7 @@ class ScrapApplication(IScrapApplication):
         self.__anticorruption = anticorruption
         self.__logger = get_logger(self.__class__.__name__)
 
-    def start_scraping(self):
+    def start_scraping(self) -> None:
         self.__logger.info("Scraping process started")
 
         with UnityOfWork() as uow:
@@ -53,7 +54,7 @@ class ScrapApplication(IScrapApplication):
                 self.__domain.mark_error(job, e)
                 raise
 
-    def get_status(self) -> dict:
+    def get_status(self) -> Dict[str, Any]:
         self.__logger.info("Fetching scraping status")
 
         with UnityOfWork() as uow:

@@ -2,7 +2,6 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from src.data.database.unity_of_work import UnityOfWork
 from src.exceptions.exceptions import (
-    BookScrapingApiError,
     EntityDoesNotExistsError,
     IntegrityError,
     ServiceError
