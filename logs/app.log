@@ -1,0 +1,2 @@
+[2025-12-22 18:30:16,768] [INFO] UserApplication - Creating user (username=string, email=user@example.com)
+[2025-12-22 18:30:16,768] [INFO] UserApplication - User created successfully (id=None, username=string)

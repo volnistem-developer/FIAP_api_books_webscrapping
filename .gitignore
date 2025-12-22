@@ -4,3 +4,4 @@ storage.db
 .env
 venv
 public
+logs

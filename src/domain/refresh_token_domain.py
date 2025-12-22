@@ -1,3 +1,4 @@
+from typing import Optional
 from sqlalchemy.exc import NoResultFound
 
 from datetime import datetime
@@ -15,11 +16,10 @@ from src.interfaces.infrastructure.interface_refresh_token_repository import IRe
 
 class RefreshTokenDomain(IRefreshTokenDomain):
 
-
     def __init__(self, repository: IRefreshTokenRepository):
         self.__repository = repository
 
-    def attach_uow(self, uow: UnityOfWork):
+    def attach_uow(self, uow: UnityOfWork) -> None:
         self.__repository.uow = uow
 
     def create_refresh_token(self, token: str, user_id: int, expires_at: datetime) -> RefreshTokenEntity:
@@ -28,7 +28,7 @@ class RefreshTokenDomain(IRefreshTokenDomain):
         except Exception as e:
             raise ServiceError() from e
     
-    def get_refresh_token(self, token: str) -> RefreshTokenEntity:
+    def get_refresh_token(self, token: str) -> Optional[RefreshTokenEntity]:
         try:
             return self.__repository.get_refresh_token(token)
         except NoResultFound as e:

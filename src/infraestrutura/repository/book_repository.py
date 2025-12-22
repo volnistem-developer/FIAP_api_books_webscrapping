@@ -1,19 +1,20 @@
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Optional
-from sqlalchemy import or_
+from typing import List, Optional
+from sqlalchemy import Tuple, or_
 from sqlalchemy.orm import selectinload
 
 from src.data.database.unity_of_work import UnityOfWork
 from src.entity.book_entity import BookEntity
 from src.entity.category_entity import CategoryEntity
+from src.interfaces.infrastructure.interface_book_repository import IBookRepository
 
 
-class BookRepository:
+class BookRepository(IBookRepository):
 
     def __init__(self, uow: UnityOfWork):
         self.uow = uow
 
-    def get_or_create(self, book: dict):
+    def get_or_create(self, book: dict) -> BookEntity:
         entity = (
             self.uow.session
             .query(BookEntity)
@@ -35,11 +36,11 @@ class BookRepository:
         self.uow.session.add(entity)
         return entity
 
-    def link_category(self, book: BookEntity, category: CategoryEntity):
+    def link_category(self, book: BookEntity, category: CategoryEntity) -> None:
         if category not in book.categories:
             book.categories.append(category)
 
-    def get_all_books(self, page:int, page_size: int):
+    def get_all_books(self, page: int, page_size: int) -> Tuple[List[BookEntity], int]:
         offset = (page - 1) * page_size
 
         entities = (
@@ -56,7 +57,7 @@ class BookRepository:
 
         return books, total
 
-    def get_all_books_most_rated(self, page: int, page_size: int):
+    def get_all_books_most_rated(self, page: int, page_size: int) -> Tuple[List[BookEntity], int]:
 
         offset = (page - 1) * page_size
 
@@ -75,7 +76,7 @@ class BookRepository:
 
         return books, total
     
-    def get_book(self, id: int):
+    def get_book(self, id: int) -> Optional[BookEntity]:
         
         entity = (
             self.uow.session
@@ -87,7 +88,7 @@ class BookRepository:
 
         return entity
 
-    def get_by_price_range(self, price_min: float, price_max: float):
+    def get_by_price_range(self, price_min: float, price_max: float) -> List[BookEntity]:
 
         min_cents = int(
             (Decimal(str(price_min)) * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
@@ -106,8 +107,7 @@ class BookRepository:
 
         return query.all()
 
-
-    def get_books_from_title_or_category(self, title: str | None = None, category: str | None = None):
+    def get_books_from_title_or_category(self, title: Optional[str] = None, category: Optional[str] = None) -> List[BookEntity]:
         query = (
             self.uow.session
             .query(BookEntity)

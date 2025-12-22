@@ -28,7 +28,6 @@ from src.data.database.db import engine
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
-
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -55,12 +54,12 @@ def custom_openapi():
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
-
-app.include_router(user_auth_router)
-app.include_router(user_router)
-app.include_router(scrap_router)
-app.include_router(book_router)
-app.include_router(health_router)
+def include_routes():
+    app.include_router(user_auth_router)
+    app.include_router(user_router)
+    app.include_router(scrap_router)
+    app.include_router(book_router)
+    app.include_router(health_router)
 
 def create_exception_handler(
     status_code: int, initial_detail: str
@@ -80,71 +79,72 @@ def create_exception_handler(
 
     return exception_handler
 
-app.add_exception_handler(
+def exception_handler():
+    app.add_exception_handler(
     exc_class_or_status_code=EntityDoesNotExistsError,
     handler=create_exception_handler(
         status.HTTP_404_NOT_FOUND, "Entity does not exist."
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=InvalidOperationError,
-    handler=create_exception_handler(
-        status.HTTP_400_BAD_REQUEST, "Não foi possível realizar essa ação."
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=IntegrityError,
-    handler=create_exception_handler(
-        status.HTTP_400_BAD_REQUEST, "Não foi possível processar, devido a um erro de integridade."
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=DataError,
-    handler=create_exception_handler(
-        status.HTTP_400_BAD_REQUEST, "Dados não puderam ser processados, confira os campos."
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=AuthenticationFailedError,
-    handler=create_exception_handler(
-        status.HTTP_401_UNAUTHORIZED,
-        "Falha na autenticação, credenciais inválidas.",
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=ForbiddenError,
-    handler=create_exception_handler(
-        status.HTTP_403_FORBIDDEN, "Ação inválida, parece que você não tem permissão para isso."
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=InvalidTokenError,
-    handler=create_exception_handler(
-        status.HTTP_401_UNAUTHORIZED, "Token inválido, por favor faça login novamente."
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=UnauthorizedError,
-    handler=create_exception_handler(
-        status.HTTP_401_UNAUTHORIZED, "Não autorizado"
-    ),
-)
-
-app.add_exception_handler(
-    exc_class_or_status_code=ServiceError,
-    handler=create_exception_handler(
-        status.HTTP_500_INTERNAL_SERVER_ERROR, 'Ocorreu um erro inesperado ao comunicar com servidor, tente novamente.'
+        ),
     )
-)
 
+    app.add_exception_handler(
+        exc_class_or_status_code=InvalidOperationError,
+        handler=create_exception_handler(
+            status.HTTP_400_BAD_REQUEST, "Não foi possível realizar essa ação."
+        ),
+    )
 
-# app.add_exception_handler(RequestValidationError, pydantic_validation_handler)
+    app.add_exception_handler(
+        exc_class_or_status_code=IntegrityError,
+        handler=create_exception_handler(
+            status.HTTP_400_BAD_REQUEST, "Não foi possível processar, devido a um erro de integridade."
+        ),
+    )
+
+    app.add_exception_handler(
+        exc_class_or_status_code=DataError,
+        handler=create_exception_handler(
+            status.HTTP_400_BAD_REQUEST, "Dados não puderam ser processados, confira os campos."
+        ),
+    )
+
+    app.add_exception_handler(
+        exc_class_or_status_code=AuthenticationFailedError,
+        handler=create_exception_handler(
+            status.HTTP_401_UNAUTHORIZED,
+            "Falha na autenticação, credenciais inválidas.",
+        ),
+    )
+
+    app.add_exception_handler(
+        exc_class_or_status_code=ForbiddenError,
+        handler=create_exception_handler(
+            status.HTTP_403_FORBIDDEN, "Ação inválida, parece que você não tem permissão para isso."
+        ),
+    )
+
+    app.add_exception_handler(
+        exc_class_or_status_code=InvalidTokenError,
+        handler=create_exception_handler(
+            status.HTTP_401_UNAUTHORIZED, "Token inválido, por favor faça login novamente."
+        ),
+    )
+
+    app.add_exception_handler(
+        exc_class_or_status_code=UnauthorizedError,
+        handler=create_exception_handler(
+            status.HTTP_401_UNAUTHORIZED, "Não autorizado"
+        ),
+    )
+
+    app.add_exception_handler(
+        exc_class_or_status_code=ServiceError,
+        handler=create_exception_handler(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, 'Ocorreu um erro inesperado ao comunicar com servidor, tente novamente.'
+        )
+    )
+
+include_routes()
+exception_handler()
 
 app.openapi = custom_openapi

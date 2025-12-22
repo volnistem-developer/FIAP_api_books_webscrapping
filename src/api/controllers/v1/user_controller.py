@@ -28,7 +28,6 @@ def get_user_by_id(params: UserIdDTO = Depends()):
         return service.get_by_id(role_id)
 
 @router.post("/", response_model=UserReadDTO , status_code=201)
-@protected()
 def insert_user(user: UserCreateDTO):
     service, uow = services.user_service()
 
