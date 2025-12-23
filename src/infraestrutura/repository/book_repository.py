@@ -1,6 +1,6 @@
 from decimal import ROUND_HALF_UP, Decimal
-from typing import List, Optional
-from sqlalchemy import Tuple, or_
+from typing import List, Optional, Tuple
+from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
 
 from src.data.database.unity_of_work import UnityOfWork
