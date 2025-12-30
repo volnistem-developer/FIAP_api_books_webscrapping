@@ -7,7 +7,7 @@ from src.data.database.unity_of_work import UnityOfWork
 
 router = APIRouter(prefix="/api/v1/health", tags=["Health"])
 
-@router.get("/")
+@router.get("/", status_code=200)
 def health_check():
     try:
         with UnityOfWork() as uow:

@@ -47,6 +47,7 @@ class AnticorruptionBooksScraping():
                 price = self.__extract_price(book)
                 slug = self.__extract_book_slug(book)
                 image_url = self.__extract_image_url(book, self.__url)
+                available = self.__extract_disponibility(book)
 
                 image_path = None
                 if image_url:
@@ -62,7 +63,8 @@ class AnticorruptionBooksScraping():
                     "category": category["name"],
                     "rating": rating,
                     "original_price": self.__convert_price_to_cents(price),
-                    "image_path": image_path
+                    "image_path": image_path,
+                    "available": available
                 })
 
             next_page = site.select_one('li.next a')
@@ -130,7 +132,19 @@ class AnticorruptionBooksScraping():
 
         return parts[-2]
 
-    def __extract_disponibility(): pass
+    def __extract_disponibility(self, book:Tag):
+        element = book.find('p', class_="availability")
+
+        if not element:
+            return False
+        
+        classes = element.get('class', [])
+        text = element.get_text(strip=True).lower()
+
+        if "instock" in classes:
+            return True
+        
+        return "in stock" in text
 
     def __convert_rating_to_number(self, number_as_string: str) -> int:
 

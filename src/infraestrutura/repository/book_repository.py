@@ -1,6 +1,6 @@
 from decimal import ROUND_HALF_UP, Decimal
 from typing import List, Optional, Tuple
-from sqlalchemy import or_
+from sqlalchemy import or_, func, case
 from sqlalchemy.orm import selectinload
 
 from src.data.database.unity_of_work import UnityOfWork
@@ -30,7 +30,8 @@ class BookRepository(IBookRepository):
             slug=book["slug"],
             rating=book["rating"],
             raw_price_in_cents=book["original_price"],
-            image_path=book["image_path"]
+            image_path=book["image_path"],
+            available=book["available"]
         )
 
         self.uow.session.add(entity)
@@ -132,3 +133,81 @@ class BookRepository(IBookRepository):
             query = query.filter(or_(*filters)) 
 
         return query.distinct().all()
+    
+    def count_all(self) -> int:
+        return self.uow.session.query(func.count(BookEntity.id)).scalar()
+
+    def count_available(self) -> int: 
+        return (
+            self.uow.session
+            .query(func.count(BookEntity.id))
+            .filter(BookEntity.available == True)
+            .scalar()
+        )
+    
+    def get_average_rating(self) -> float:
+        return(
+            self.uow.session
+            .query(func.avg(BookEntity.rating))
+            .scalar() or 0
+        )
+    
+    def get_average_price_brl(self) -> float:
+        avg_raw = (
+            self.uow.session
+            .query(func.avg(BookEntity.raw_price_in_cents))
+            .scalar()
+        )
+
+        if not avg_raw:
+            return 0
+        
+        return (avg_raw / 100) * 7.41
+
+    def get_stats_by_category(self):
+        query = (
+            self.uow.session
+            .query(
+                CategoryEntity.id.label("category_id"),
+                CategoryEntity.name.label("category_name"),
+                func.count(BookEntity.id).label("total_books"),
+                func.sum(
+                    case(
+                        (BookEntity.available == True, 1), else_=0
+                    )
+                ).label("available_books"),
+                func.avg(BookEntity.rating).label("average_rating"),
+                func.avg(BookEntity.raw_price_in_cents).label("average_raw_price_in_cents")
+            )
+            .join(BookEntity.categories)
+            .group_by(CategoryEntity.id, CategoryEntity.name)
+        )
+
+        return query.all()
+    
+    def get_availability_stats(self):
+        result = (
+            self.uow.session
+            .query(
+                func.count(BookEntity.id).label("total_books"),
+                func.sum(
+                    case(
+                        (BookEntity.available == True, 1),
+                        else_=0
+                    )
+                ).label("available_books"),
+                func.sum(
+                    case(
+                        (BookEntity.available == False, 1),
+                        else_=0
+                    )
+                ).label("unavailable_books"),
+            )
+            .one()
+        )
+
+        return {
+            "total_books": result.total_books or 0,
+            "available_books": result.available_books or 0,
+            "unavailable_books": result.unavailable_books or 0,
+        }
