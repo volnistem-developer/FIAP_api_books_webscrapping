@@ -22,6 +22,7 @@ from src.api.controllers.v1.user_controller import router as user_router
 from src.api.controllers.v1.scrap_controller import router as scrap_router
 from src.api.controllers.v1.book_controller import router as book_router
 from src.api.controllers.v1.health_controller import router as health_router
+from src.api.controllers.v1.stats_controller import router as stats_router
 from src.data.database.base import Base
 from src.data.database.db import engine
 
@@ -60,6 +61,7 @@ def include_routes():
     app.include_router(scrap_router)
     app.include_router(book_router)
     app.include_router(health_router)
+    app.include_router(stats_router)
 
 def create_exception_handler(
     status_code: int, initial_detail: str

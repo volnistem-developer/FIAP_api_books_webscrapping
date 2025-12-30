@@ -3,10 +3,11 @@ from fastapi import APIRouter, BackgroundTasks
 from src.api.config.dependency_injection_config import services
 from src.api.config.protected_security_decorator import protected
 from src.api.middlewares.auth_middleware import ProtectedRoute
+from src.dtos.scrap_dto import ScrapStatusDTO
 
 router = APIRouter(prefix="/api/v1/scraping", tags=["Scraping"], route_class=ProtectedRoute)
 
-@router.post("/trigger")
+@router.post("/trigger", status_code=200)
 @protected()
 def trigger_scraping(background_tasks: BackgroundTasks):
 
@@ -19,7 +20,7 @@ def trigger_scraping(background_tasks: BackgroundTasks):
         "message": 'scraping running in background'
     }
 
-@router.get("/status")
+@router.get("/status", response_model=ScrapStatusDTO, status_code=200)
 @protected()
 def get_scraping_status():
     service = services.get_scrap_service()

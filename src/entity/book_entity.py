@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from src.data.database.base import Base
@@ -15,6 +15,7 @@ class BookEntity(Base):
     rating = Column(Integer, nullable=False)
     raw_price_in_cents = Column(Integer)
     image_path = Column(String(150))
+    available = Column(Boolean)
 
 
     categories = relationship(
@@ -23,9 +24,10 @@ class BookEntity(Base):
         back_populates="books"
     )
 
-    def __init__(self, title, slug, rating, raw_price_in_cents, image_path):
+    def __init__(self, title, slug, rating, raw_price_in_cents, image_path, available):
         self.title = title
         self.slug = slug
         self.rating = rating
         self.raw_price_in_cents = raw_price_in_cents
         self.image_path = image_path
+        self.available = available

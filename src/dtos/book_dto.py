@@ -15,6 +15,7 @@ class BookReadDTO(BaseModel):
     brl_price_in_cents: int
     brl_price: float
     image_path: str
+    available: bool
     categories: list[CategoryReadDTO]
 
 class CatalogBooksDTO(BaseModel):    

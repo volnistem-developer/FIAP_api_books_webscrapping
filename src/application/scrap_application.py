@@ -25,7 +25,6 @@ class ScrapApplication(IScrapApplication):
                 job = self.__domain.create_execution()
                 self.__logger.info(f"Scraping job created (id={job.id}, status=RUNNING)")
 
-                # Commit imediato para visibilidade do status RUNNING
                 uow.commit()
                 self.__logger.info("Scraping job persisted with status RUNNING")
 

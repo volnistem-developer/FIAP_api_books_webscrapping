@@ -63,5 +63,6 @@ class BookService():
             brl_price_in_cents=int(round((entity.raw_price_in_cents/100)*7.41, 2)*100),
             brl_price=round((entity.raw_price_in_cents/100)*7.41, 2),
             image_path=entity.image_path,
+            available=entity.available,
             categories=[{"id": c.id, "name": c.name} for c in entity.categories]
         )
