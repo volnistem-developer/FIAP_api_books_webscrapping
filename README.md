@@ -47,3 +47,91 @@ FIAP_api_books_webscrapping/
 ├── storage.db                          # Banco de dados SQLite
 └── requirements.txt                    # Dependências do projeto
 ```
+
+## Instalação e Configuração do Projeto
+Após clonar o repositório para sua máquina, será necessário configurar um ambiente virtual Python e instalar as dependências do projeto antes de executá-lo.
+
+Pré-requisitos
+- Python instalado
+- Sistema operacional Windows
+
+> ⚠️ As instruções abaixo foram testadas exclusivamente em ambiente Windows.
+Não há, até o momento, validação oficial para macOS ou Linux.
+
+### Criação e ativação do ambiente virtual:
+- Instale a biblioteca responsável pela criação do ambiente virtual:
+  <pre>pip install virtualenv</pre>
+- Crie o ambiente virtual (o nome venv é apenas uma sugestão):
+  <pre>python -m virtualenv venv</pre>
+- Ative o ambiente virtual de acordo com o terminal utilizado:
+  <pre>.\venv\Scripts\Activate.ps1</pre> (caso esteja utilizando o powershell)
+  <pre>.\venv\Scripts\activate.bat</pre> (caso esteja utilizando o cmd)
+
+### Com o ambiente virtual ativo, instale as dependências do projeto:
+  <pre>pip install -r requirements.txt</pre>
+
+### Configuração das variáveis de ambiente
+Para que a aplicação funcione corretamente, é necessário configurar o arquivo de variáveis de ambiente.
+
+Na raiz do projeto, existe um arquivo chamado env.example.
+Renomeie esse arquivo para .env e preencha os valores conforme necessário.
+
+```
+JWT_SECRET_KEY="sua_string_secreta"               
+JWT_ALGORITHM="HS256"                             
+DB_PATH="sqlite:///storage.db"                    
+URL_TO_SCRAPE="https://books.toscrape.com/"       
+SCRAPING_COOLDOWN_MINUTES=60 
+```
+#### Descrição das variáveis
+
+> ###### JWT_SECRET_KEY
+> Chave secreta utilizada para a criptografia do JWT.
+> Recomenda-se gerar uma chave segura, por exemplo utilizando:
+https://jwtsecrets.com/
+
+> ###### JWT_ALGORITHM
+> Algoritmo de criptografia do JWT.
+> O valor padrão (HS256) é suficiente para o funcionamento do projeto.
+
+> ###### DB_PATH
+> Caminho de conexão com o banco de dados.
+> O projeto utiliza SQLite, portanto não é necessário alterar esse valor.
+
+> ###### URL_TO_SCRAPE
+> URL base do site utilizado para a raspagem de dados.
+> Não é necessário modificar esse valor.
+
+> ###### SCRAPING_COOLDOWN_MINUTES
+> Intervalo mínimo (em minutos) para permitir uma nova execução do processo de scraping.
+> O valor padrão é 60 minutos, mas pode ser ajustado conforme a necessidade.
+
+### Excecução do projeto
+Para executar o projeto localmente em sua máquina utilize o comando:
+  <pre>fastapi dev main.py</pre>
+
+## Rotas da API
+
+### Authorization
+```http
+  POST /api/v1/auth/login
+```
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `username` | `string` | **Obrigatório**. nome de usuário que foi cadastrado no sistema |
+| `password` | `string` | **Obrigatório**. senha cadastrada para esse usuario |
+
+```http
+  POST /api/v1/auth/refresh
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `refresh_token` | `string`   | **Obrigatório**. O refresh token que foi retornado ao realizar login. |
+
+### User (requer autenticação)
+```http
+  GET /api/v1/users/
+```
+Retorna todos os usuários ativos que estão cadastrados no sistema
+
+
