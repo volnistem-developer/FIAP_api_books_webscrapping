@@ -19,7 +19,7 @@ def categories_stats():
 
     return service.get_categories_stats()
 
-@router.get("/stats/availability", response_model=AvailabilityStatsDTO, status_code=200)
+@router.get("/availability", response_model=AvailabilityStatsDTO, status_code=200)
 def get_availability_stats():
     service = services.get_stats_service()
 

@@ -20,7 +20,7 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.id == id)
-            .one()
+            .one_or_none()
         )
     
     def get_by_username(self, username: str) -> UserEntity:
@@ -28,7 +28,15 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.username == username)
-            .one()
+            .one_or_none()
+        )
+    
+    def get_by_email(self, email: str) -> UserEntity:
+        return (
+            self.uow.session
+            .query(UserEntity)
+            .filter(UserEntity.email == email)
+            .one_or_none()
         )
     
     def insert(self, entity: UserEntity) -> UserEntity:
@@ -40,7 +48,7 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.id == id, UserEntity.active == True)
-            .one()
+            .one_or_none()
         )
 
         entity.active = False
@@ -50,7 +58,7 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.id == id, UserEntity.active == True)
-            .one()
+            .one_or_none()
         )
 
         entity.name = name

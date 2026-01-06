@@ -37,6 +37,14 @@ class IUserRepository(ABC):
         pass
 
     @abstractmethod
+    def get_by_email(self, email: str) -> UserEntity:
+        """
+        Retorna um usuário pelo email.
+        Lança exceção se não existir.
+        """
+        pass
+
+    @abstractmethod
     def insert(self, entity: UserEntity) -> UserEntity:
         """
         Persiste um novo usuário.

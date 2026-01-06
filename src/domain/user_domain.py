@@ -3,8 +3,8 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from src.data.database.unity_of_work import UnityOfWork
 from src.exceptions.exceptions import (
     EntityDoesNotExistsError,
-    IntegrityError,
-    ServiceError
+    ServiceError,
+    InvalidOperationError
 )
 
 from src.entity.user_entity import UserEntity
@@ -44,21 +44,17 @@ class UserDomain(IUserDomain):
             raise ServiceError() from e
 
     def insert(self, entidade: UserEntity) -> UserEntity:
+
+        if self.__repository.get_by_email(entidade.email):
+            raise InvalidOperationError("Esse e-mail já existe na base de dados.")
+
+        if self.__repository.get_by_username(entidade.username):
+            raise InvalidOperationError("Esse usuário já existe na base de dados.")
+
         try:
             return self.__repository.insert(entidade)
-
         except IntegrityError as e:
-            msg = str(e.orig).lower()
-
-            if "email" in msg:
-                raise ServiceError("Esse e-mail já existe na base de dados.") from e
-            if "username" in msg:
-                raise ServiceError("Esse usuário já existe na base de dados.") from e
-
-            raise ServiceError() from e
-
-        except Exception as e:
-            raise ServiceError() from e
+            raise ServiceError("Erro de integridade ao criar usuário.") from e
     
     def delete(self, id: int) -> None:
         try:

@@ -13,7 +13,7 @@ class CategoryRepository(ICategoryRepository):
             self.uow.session
             .query(CategoryEntity)
             .filter(CategoryEntity.name == name)
-            .one()
+            .one_or_none()
         )
 
     def get_all(self) -> List[CategoryEntity]:
