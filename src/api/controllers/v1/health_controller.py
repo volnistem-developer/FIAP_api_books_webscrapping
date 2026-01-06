@@ -21,7 +21,6 @@ def health_check():
         }
 
     except Exception as e:
-        print(e)
         return {
             "status": "error",
             "api": "up",

@@ -17,15 +17,15 @@ def list_all_users():
     with uow:
         return service.list_all()
 
-@router.get("/{id}", status_code=200, response_model=UserReadDTO)
+@router.get("/{id}", status_code=200, response_model=UserReadDTO|None)
 @protected()
 def get_user_by_id(params: UserIdDTO = Depends()):
     service, uow = services.user_service()
 
-    role_id = params.id
+    user_id = params.id
 
     with uow:
-        return service.get_by_id(role_id)
+        return service.get_by_id(user_id)
 
 @router.post("/", response_model=UserReadDTO , status_code=201)
 def insert_user(user: UserCreateDTO):
@@ -39,10 +39,10 @@ def insert_user(user: UserCreateDTO):
 def delete_user(params: UserIdDTO = Depends()):
     service, uow = services.user_service()
 
-    role_id = params.id
+    user_id = params.id
 
     with uow:
-        return service.delete_user(role_id)
+        return service.delete_user(user_id)
 
 @router.put("/{id}", status_code=200, response_model=UserReadDTO)
 @protected()

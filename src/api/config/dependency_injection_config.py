@@ -83,7 +83,7 @@ class GetServices():
         scrap_repo = ScrapRepository()
 
         domain = StatsDomain(book_repo, scrap_repo)
-        application = StatsApplication(domain, uow)
+        application = StatsApplication(domain)
         
         return StatsService(application)
 

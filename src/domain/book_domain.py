@@ -1,7 +1,9 @@
 from typing import List, Optional
+from sqlalchemy.exc import NoResultFound
+
 from src.data.database.unity_of_work import UnityOfWork
 from src.entity.book_entity import BookEntity
-from src.exceptions.exceptions import ServiceError
+from src.exceptions.exceptions import ServiceError, EntityDoesNotExistsError
 from src.interfaces.domain.interface_book_domain import IBookDomain
 
 
@@ -28,6 +30,8 @@ class BookDomain(IBookDomain):
     def get_book(self, id: int) -> BookEntity:
         try:
             return self.__repository.get_book(id)
+        except NoResultFound as e:
+            raise EntityDoesNotExistsError("Livro não encontrado") from e
         except Exception as e:
             raise ServiceError() from e
         

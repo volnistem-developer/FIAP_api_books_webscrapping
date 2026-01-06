@@ -20,7 +20,7 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.id == id)
-            .one_or_none()
+            .one()
         )
     
     def get_by_username(self, username: str) -> UserEntity:
@@ -48,7 +48,7 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.id == id, UserEntity.active == True)
-            .one_or_none()
+            .one()
         )
 
         entity.active = False
@@ -58,7 +58,7 @@ class UserRepository(IUserRepository):
             self.uow.session
             .query(UserEntity)
             .filter(UserEntity.id == id, UserEntity.active == True)
-            .one_or_none()
+            .one()
         )
 
         entity.name = name

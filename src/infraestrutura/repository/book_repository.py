@@ -84,7 +84,7 @@ class BookRepository(IBookRepository):
             .query(BookEntity)
             .options(selectinload(BookEntity.categories))
             .filter(BookEntity.id == id)
-            .one_or_none()
+            .one()
         )
 
         return entity

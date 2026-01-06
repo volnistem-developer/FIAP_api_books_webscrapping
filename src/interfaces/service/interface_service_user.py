@@ -14,14 +14,14 @@ class IServiceUser(ABC):
         pass
 
     @abstractmethod
-    def get_by_id(self, id: int) -> Optional[UserReadDTO]:
+    def get_by_id(self, id: int) -> UserReadDTO:
         """
         Retorna um usuário pelo ID ou None se não existir.
         """
         pass
 
     @abstractmethod
-    def insert_user(self, dto: UserCreateDTO) -> Optional[UserReadDTO]:
+    def insert_user(self, dto: UserCreateDTO) -> UserReadDTO:
         """
         Cria um novo usuário.
         """
@@ -35,7 +35,7 @@ class IServiceUser(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, id: int, dto: UserUpdateDTO) -> Optional[UserReadDTO]:
+    def update_user(self, id: int, dto: UserUpdateDTO) -> UserReadDTO:
         """
         Atualiza os dados de um usuário.
         """

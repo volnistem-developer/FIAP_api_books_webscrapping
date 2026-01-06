@@ -16,15 +16,12 @@ class UserService(IServiceUser):
         users = self.application.list_all()
         return [self.__convert_entity_to_dto(e) for e in users]
 
-    def get_by_id(self, id: int) -> Optional[UserReadDTO]:
+    def get_by_id(self, id: int) -> UserReadDTO:
         entity = self.application.get_by_id(id)
-
-        if entity is None:
-            return None
 
         return self.__convert_entity_to_dto(entity)
 
-    def insert_user(self, dto: UserCreateDTO) -> Optional[UserReadDTO]:
+    def insert_user(self, dto: UserCreateDTO) -> UserReadDTO:
         entity = UserEntity(
             name=dto.name,
             username=dto.username,
@@ -42,7 +39,7 @@ class UserService(IServiceUser):
     def delete_user(self, id: int) -> None:
         self.application.delete_user(id)
 
-    def update_user(self, id: int, dto: UserUpdateDTO) -> Optional[UserReadDTO]:
+    def update_user(self, id: int, dto: UserUpdateDTO) -> UserReadDTO:
         updated = self.application.update_user(
             id=id,
             name=dto.name,
