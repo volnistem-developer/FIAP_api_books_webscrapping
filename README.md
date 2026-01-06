@@ -135,7 +135,7 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 ### Not Found - 404
 ```http
 {
-  "message": "Usuário não encontrado"
+  "message": "string"
 }
 ```
 
@@ -175,7 +175,7 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 ### Unauthorized - 401
 ```http
 {
-  "message": "Token inválido ou revogado."
+  "message": "string"
 }
 ```
 
@@ -218,7 +218,7 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 ### Unauthorized - 401 (Se não estiver autenticado)
 ```http
 {
-  "message": "Não autorizado"
+  "message": "string"
 }
 ```
 
@@ -230,20 +230,40 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | :---------- | :--------- | :------------------------------------------ |
 | `id` | `int`| **Obrigatório**. Id do usuário que deseja procurar.      |
 
+
 > Possiveis Respostas
 
 ### Successful Response - 200
 ```http
-[
-  {
-    "id": 0,
-    "name": "string",
-    "username": "string",
-    "email": "string",
-    "created_at": "2026-01-06T18:20:46.000Z",
-    "active": true
-  }
-]
+{
+  "id": 0,
+  "name": "string",
+  "username": "string",
+  "email": "string",
+  "created_at": "2026-01-06T21:40:29.387Z",
+  "active": true
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Not Found - 404
+```http
+{
+  "message": "string"
+}
 ```
 
 #### Insert new user (Não precisa estar autenticado)
@@ -285,6 +305,12 @@ Para executar o projeto localmente em sua máquina utilize o comando:
   ]
 }
 ```
+### Bad Request - 400
+```http
+{
+  "message": "string"
+}
+```
 
 
 #### Delete a user
@@ -295,13 +321,84 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | :---------- | :--------- | :------------------------------------------ |
 | `id` | `int`| **Obrigatório**. Id do usuário que deseja inativar       |
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "id": 0,
+  "name": "string",
+  "username": "string",
+  "email": "string",
+  "created_at": "2026-01-06T21:40:29.387Z",
+  "active": true
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Not Found - 404
+```http
+{
+  "message": "string"
+}
+```
+
 #### Update a user
 ```http
   PUT /api/v1/users/{id}
 ```
 | Parâmetro   | Tipo       | Descrição                                   |
 | :---------- | :--------- | :------------------------------------------ |
-| `id` | `int`| **Obrigatório**. Id do usuário que deseja atualizar       |
+| `id` | `int`| **Obrigatório**. Id do usuário que deseja atualizar      |
+
+
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "id": 0,
+  "name": "string",
+  "username": "string",
+  "email": "string",
+  "created_at": "2026-01-06T21:40:29.387Z",
+  "active": true
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Not Found - 404
+```http
+{
+  "message": "string"
+}
+```
 
 
 ### Scraping (requer autenticação)
@@ -311,9 +408,36 @@ Para executar o projeto localmente em sua máquina utilize o comando:
   POST /api/v1/scraping/trigger
 ```
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+    "status": 'string',
+    "message": 'string'
+}
+```
+
 #### Get scraping Status
 ```http
   GET /api/v1/scraping/status
+```
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "status": "string",
+  "started_at": "2026-01-06T22:01:20.567Z",
+  "finished_at": "2026-01-06T22:01:20.567Z",
+  "error": "string"
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
 ```
 
 ### Books (requer autenticação)
@@ -327,6 +451,59 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | `page` | `int`| **Default = 1**. Página atual para a visualização dos livros       |
 | `page_size` | `int`| **Default = 10**. Quantidade de livros aprensentada na página atual       |
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "page": 0,
+  "page_size": 0,
+  "total_of_books": 0,
+  "total_of_pages": 0,
+  "catalog": [
+    {
+      "id": 0,
+      "title": "string",
+      "slug": "string",
+      "rating": 0,
+      "raw_price_in_cents": 0,
+      "raw_price": 0,
+      "brl_price_in_cents": 0,
+      "brl_price": 0,
+      "image_path": "string",
+      "available": true,
+      "categories": [
+        {
+          "id": 0,
+          "name": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
+```
+
 #### Get Books by title and/or category
 ```http
   GET /api/v1/books/search
@@ -335,6 +512,54 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | :---------- | :--------- | :------------------------------------------ |
 | `title` | `string`|  Titulo que deseja filtrar       |
 | `category` | `string`| Categoria que deseja filtrar       |
+
+
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+[
+  {
+    "id": 0,
+    "title": "string",
+    "slug": "string",
+    "rating": 0,
+    "raw_price_in_cents": 0,
+    "raw_price": 0,
+    "brl_price_in_cents": 0,
+    "brl_price": 0,
+    "image_path": "string",
+    "available": true,
+    "categories": [
+      {
+        "id": 0,
+        "name": "string"
+      }
+    ]
+  }
+]
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
+```
 
 #### Get Books by Price Range
 ```http
@@ -345,6 +570,52 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | `min` | `float`| **Obrigatório**. Valor minimo para o range de preços  |
 | `max` | `float`| **Obrigatório**. Valor máximo para o range de preços  |
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+[
+  {
+    "id": 0,
+    "title": "string",
+    "slug": "string",
+    "rating": 0,
+    "raw_price_in_cents": 0,
+    "raw_price": 0,
+    "brl_price_in_cents": 0,
+    "brl_price": 0,
+    "image_path": "string",
+    "available": true,
+    "categories": [
+      {
+        "id": 0,
+        "name": "string"
+      }
+    ]
+  }
+]
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
+```
 
 #### Get specific Book
 ```http
@@ -354,9 +625,78 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | :---------- | :--------- | :------------------------------------------ |
 | `id` | `int`| **Obrigatório**. Id do livro que deseja procurar         |
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "id": 0,
+  "title": "string",
+  "slug": "string",
+  "rating": 0,
+  "raw_price_in_cents": 0,
+  "raw_price": 0,
+  "brl_price_in_cents": 0,
+  "brl_price": 0,
+  "image_path": "string",
+  "available": true,
+  "categories": [
+    {
+      "id": 0,
+      "name": "string"
+    }
+  ]
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
+```
+### Not Found - 404
+```http
+{
+  "message": "string"
+}
+```
+
 #### List all Categories
 ```http
   GET /api/v1/books/categories
+```
+
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+[
+  {
+    "id": 0,
+    "name": "string"
+  }
+]
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
 ```
 
 #### Get Top-rated Books (only books with 5 stars rating) 
@@ -368,11 +708,67 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | `page` | `int`| **Default = 1**. Página atual para a visualização dos livros       |
 | `page_size` | `int`| **Default = 10**. Quantidade de livros aprensentada na página atual       |
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "id": 0,
+  "title": "string",
+  "slug": "string",
+  "rating": 0,
+  "raw_price_in_cents": 0,
+  "raw_price": 0,
+  "brl_price_in_cents": 0,
+  "brl_price": 0,
+  "image_path": "string",
+  "available": true,
+  "categories": [
+    {
+      "id": 0,
+      "name": "string"
+    }
+  ]
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
+```
 
 ### Health
 #### Check API connectivity
 ```http
   GET /api/v1/health
+```
+
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "status": "ok",
+  "api": "up",
+  "database": "up",
+  "timestamp": "2026-01-06T22:01:20.567Z"
+}
 ```
 
 ### Statistics (Requer autenticação)
@@ -382,12 +778,65 @@ Para executar o projeto localmente em sua máquina utilize o comando:
   GET /api/v1/stats/overview
 ```
 
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+{
+  "total_books": 0,
+  "available_books": 0,
+  "unavailable_books": 0,
+  "average_rating": 0,
+  "average_price_brl": 0,
+  "last_scrap_execution": "2026-01-06T22:16:09.111Z"
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
+```
+
 #### Get Statistics from categories
 ```http
   GET /api/v1/stats/categories
+```
+### Successful Response - 200
+```http
+[
+  {
+    "category": "string",
+    "total_books": 0,
+    "available_books": 0,
+    "average_rating": 0,
+    "average_price_brl": 0
+  }
+]
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
 ```
 
 #### Get Statistics from Availability
 ```http
   GET /api/v1/stats/availability
+```
+### Successful Response - 200
+```http
+{
+  "total_books": 0,
+  "available_books": 0,
+  "unavailable_books": 0,
+  "availability_rate": 0
+}
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "string"
+}
 ```
