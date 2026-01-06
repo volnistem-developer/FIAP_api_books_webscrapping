@@ -113,6 +113,8 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 ## Rotas da API
 
 ### Authorization
+
+#### Login
 ```http
   POST /api/v1/auth/login
 ```
@@ -121,6 +123,39 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | `username` | `string` | **Obrigatório**. nome de usuário que foi cadastrado no sistema |
 | `password` | `string` | **Obrigatório**. senha cadastrada para esse usuario |
 
+> Possiveis Respostas
+### Successful Response - 200
+```http
+  {
+    "access_token": "string",
+    "refresh_token": "string",
+    "expires_in": 0
+  }
+```
+### Not Found - 404
+```http
+{
+  "message": "Usuário não encontrado"
+}
+```
+
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+#### Refresh Token
 ```http
   POST /api/v1/auth/refresh
 ```
@@ -128,10 +163,231 @@ Para executar o projeto localmente em sua máquina utilize o comando:
 | :---------- | :--------- | :------------------------------------------ |
 | `refresh_token` | `string`   | **Obrigatório**. O refresh token que foi retornado ao realizar login. |
 
+> Possiveis Respostas
+### Successful Response - 200
+```http
+{
+  "access_token": "string",
+  "refresh_token": "string",
+  "expires_in": 0
+}
+```
+### Unauthorized - 401
+```http
+{
+  "message": "Token inválido ou revogado."
+}
+```
+
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
 ### User (requer autenticação)
+
+#### Get all users
 ```http
   GET /api/v1/users/
 ```
-Retorna todos os usuários ativos que estão cadastrados no sistema
+> Possiveis Respostas
+### Successful Response - 200
+```http
+[
+  {
+    "id": 0,
+    "name": "string",
+    "username": "string",
+    "email": "string",
+    "created_at": "2026-01-06T18:20:46.000Z",
+    "active": true
+  }
+]
+```
+### Unauthorized - 401 (Se não estiver autenticado)
+```http
+{
+  "message": "Não autorizado"
+}
+```
+
+#### Get specific user
+```http
+  GET /api/v1/users/{id}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id` | `int`| **Obrigatório**. Id do usuário que deseja procurar.      |
+
+> Possiveis Respostas
+
+### Successful Response - 200
+```http
+[
+  {
+    "id": 0,
+    "name": "string",
+    "username": "string",
+    "email": "string",
+    "created_at": "2026-01-06T18:20:46.000Z",
+    "active": true
+  }
+]
+```
+
+#### Insert new user (Não precisa estar autenticado)
+```http
+  POST /api/v1/users/
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `name` | `string`| **Obrigatório**. Nome do usuário      |
+| `username` | `string`| **Obrigatório**. username para o usuário (unique constraint)      |
+| `email` | `string`| **Obrigatório**. e-mail do usuário (unique constraint)      |
+| `password` | `string`| **Obrigatório**. senha para o usuário      |
+
+> Possiveis Respostas
+
+### Successful Response - 201
+```http
+{
+  "id": 0,
+  "name": "string",
+  "username": "string",
+  "email": "string",
+  "created_at": "2026-01-06T18:21:47.450Z",
+  "active": true
+}
+```
+### Validation Error (pydantic) - 422
+```http
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
 
 
+#### Delete a user
+```http
+  DELETE /api/v1/users/{id}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id` | `int`| **Obrigatório**. Id do usuário que deseja inativar       |
+
+#### Update a user
+```http
+  PUT /api/v1/users/{id}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id` | `int`| **Obrigatório**. Id do usuário que deseja atualizar       |
+
+
+### Scraping (requer autenticação)
+
+#### Start scraping
+```http
+  POST /api/v1/scraping/trigger
+```
+
+#### Get scraping Status
+```http
+  GET /api/v1/scraping/status
+```
+
+### Books (requer autenticação)
+
+#### Get all Books
+```http
+  GET /api/v1/books
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `page` | `int`| **Default = 1**. Página atual para a visualização dos livros       |
+| `page_size` | `int`| **Default = 10**. Quantidade de livros aprensentada na página atual       |
+
+#### Get Books by title and/or category
+```http
+  GET /api/v1/books/search
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `title` | `string`|  Titulo que deseja filtrar       |
+| `category` | `string`| Categoria que deseja filtrar       |
+
+#### Get Books by Price Range
+```http
+  GET /api/v1/books/price-range
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `min` | `float`| **Obrigatório**. Valor minimo para o range de preços  |
+| `max` | `float`| **Obrigatório**. Valor máximo para o range de preços  |
+
+
+#### Get specific Book
+```http
+  GET /api/v1/books/{id}
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id` | `int`| **Obrigatório**. Id do livro que deseja procurar         |
+
+#### List all Categories
+```http
+  GET /api/v1/books/categories
+```
+
+#### Get Top-rated Books (only books with 5 stars rating) 
+```http
+  GET /api/v1/books/top-rated
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `page` | `int`| **Default = 1**. Página atual para a visualização dos livros       |
+| `page_size` | `int`| **Default = 10**. Quantidade de livros aprensentada na página atual       |
+
+
+### Health
+#### Check API connectivity
+```http
+  GET /api/v1/health
+```
+
+### Statistics (Requer autenticação)
+
+#### Get overview
+```http
+  GET /api/v1/stats/overview
+```
+
+#### Get Statistics from categories
+```http
+  GET /api/v1/stats/categories
+```
+
+#### Get Statistics from Availability
+```http
+  GET /api/v1/stats/availability
+```
