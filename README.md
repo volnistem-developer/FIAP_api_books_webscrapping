@@ -840,3 +840,7 @@ Para executar o projeto localmente em sua máquina utilize o comando:
   "message": "string"
 }
 ```
+
+### Diagrama do Projeto
+<img width="1295" height="371" alt="Diagrama sem nome drawio" src="https://github.com/user-attachments/assets/b6a48b92-cc0a-4e55-8080-4be2783a1e88" />
+
