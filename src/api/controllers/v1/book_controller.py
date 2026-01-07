@@ -30,16 +30,7 @@ def get_by_price_range(min: float, max: float):
 
     return service.get_by_price_range(min, max)
 
-@router.get("/{id}", status_code=200, response_model=BookReadDTO)
-@protected()
-def get_book(params: BookIdDTO = Depends()):
-    service = services.book_service()
-
-    book_id = params.id
-
-    return service.get_book(book_id)
-
-@router.get("/categories", status_code=200, response_model=list[CategoryReadDTO])
+@router.get("/categories", status_code=200)
 @protected()
 def list_all_categories():
     service = services.category_service()
@@ -52,3 +43,12 @@ def get_top_rated_books(page: int = 1, page_size: int = 10):
     service = services.book_service()
 
     return service.get_all_books_most_rated()
+
+@router.get("/{id}", status_code=200, response_model=BookReadDTO)
+@protected()
+def get_book(params: BookIdDTO = Depends()):
+    service = services.book_service()
+
+    book_id = params.id
+
+    return service.get_book(book_id)

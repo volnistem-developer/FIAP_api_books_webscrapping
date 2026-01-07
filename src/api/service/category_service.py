@@ -12,7 +12,8 @@ class CategoryService(IServiceCategory):
     def list_all_categories(self) -> List[CategoryReadDTO]:
         categories = self.application.list_all_categories()
 
-        return [self.__convert_entity_to_dto(c) for c in categories]
+        return categories
+        # return [self.__convert_entity_to_dto(c) for c in categories]
     
     def __convert_entity_to_dto(self, entity: CategoryEntity) -> CategoryReadDTO:
         return CategoryReadDTO(
