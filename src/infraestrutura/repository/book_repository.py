@@ -186,6 +186,7 @@ class BookRepository(IBookRepository):
         return query.all()
     
     def get_availability_stats(self):
+    
         result = (
             self.uow.session
             .query(
@@ -211,3 +212,38 @@ class BookRepository(IBookRepository):
             "available_books": result.available_books or 0,
             "unavailable_books": result.unavailable_books or 0,
         }
+    
+
+    def get_ml_features(self):
+        return (
+            self.uow.session
+            .query(
+                BookEntity.id,
+                BookEntity.rating,
+                BookEntity.raw_price_in_cents,
+                BookEntity.available,
+                func.count(CategoryEntity.id).label("num_categories")
+            )
+            .outerjoin(BookEntity.categories)
+            .group_by(BookEntity.id)
+            .all()
+        )
+    
+    def get_training_data(self):
+        return (
+            self.uow.session
+            .query(
+                BookEntity.id,
+                BookEntity.rating,
+                BookEntity.raw_price_in_cents,
+                BookEntity.available,
+                func.count(CategoryEntity.id).label("num_categories"),
+                case(
+                    (BookEntity.rating >= 4, 1),
+                    else_=0
+                ).label("target")
+            )
+            .outerjoin(BookEntity.categories)
+            .group_by(BookEntity.id)
+            .all()
+        )

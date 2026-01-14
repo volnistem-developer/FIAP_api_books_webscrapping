@@ -112,3 +112,33 @@ class BookApplication(IBookApplication):
                     "Error while searching books by title or category"
                 )
                 raise
+
+    def get_ml_features(self):
+        self.__logger.info(f"Featching book features")
+
+        with UnityOfWork() as uow:
+            try:
+                self.__domain.attach_uow(uow)
+                features = self.__domain.get_ml_features()
+
+                self.__logger.info(f"ML features founded")
+                return features
+
+            except Exception:
+                self.__logger.exception(f"Error while fetching ML books features")
+                raise
+    
+    def get_ml_training_data(self):
+        self.__logger.info(f"Featching book training data")
+
+        with UnityOfWork() as uow:
+            try:
+                self.__domain.attach_uow(uow)
+                features = self.__domain.get_ml_training_data()
+
+                self.__logger.info(f"ML training data founded")
+                return features
+
+            except Exception:
+                self.__logger.exception(f"Error while fetching ML books training data")
+                raise

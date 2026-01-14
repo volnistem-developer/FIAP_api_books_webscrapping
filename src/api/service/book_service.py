@@ -1,6 +1,7 @@
 import math
 from typing import Dict, List, Optional
 from src.dtos.book_dto import BookReadDTO
+from src.dtos.ml_dto import MLFeaturesDTO
 from src.entity.book_entity import BookEntity
 from src.infraestrutura.repository.book_repository import BookRepository
 
@@ -50,6 +51,7 @@ class BookService():
         books = self.application.get_by_price_range(price_min, price_max)
 
         return [self.__convert_entity_to_dto(e) for e in books]
+
 
     def __convert_entity_to_dto(self, entity: BookEntity) -> BookReadDTO:
         #libras esterlinas no dia 20/12/2025 - R$7,41 - valor que está no site de scraping está em libras esterilinas
