@@ -3,6 +3,12 @@
 - Python
 - FASTAPI
 
+## Arquitetura do Projeto
+
+A arquitetura do projeto foi pensada com foco em escalabilidade, legibilidade de código e manutenibilidade. Ela é baseada nos princípios da Clean Architecture, amplamente utilizada no ecossistema .NET, com a qual possuo maior familiaridade.
+A partir dessa abordagem, buscou-se aplicar as melhores práticas de organização em camadas, promovendo um código limpo, desacoplado e de fácil evolução.
+A estrutura do projeto está organizada da seguinte forma:
+
 ```
 FIAP_api_books_webscrapping/
 ├── public/                             # Arquivos públicos (ex: imagens dos livros)
@@ -41,15 +47,10 @@ FIAP_api_books_webscrapping/
 └── requirements.txt                    # Dependências do projeto
 ```
 
-## Arquitetura do Projeto
-
-A arquitetura do projeto foi pensada com foco em escalabilidade, legibilidade de código e manutenibilidade. Ela é baseada nos princípios da Clean Architecture, amplamente utilizada no ecossistema .NET, com a qual possuo maior familiaridade.
-A partir dessa abordagem, buscou-se aplicar as melhores práticas de organização em camadas, promovendo um código limpo, desacoplado e de fácil evolução.
-A estrutura do projeto está organizada da seguinte forma:
-
 ### Diagrama do Projeto
+<img width="1784" height="796" alt="diagrama_projeto" src="https://github.com/user-attachments/assets/7959d6dd-3a14-4251-950e-d7d23f5e80fc" />
 
-<img width="1295" height="371" alt="Diagrama sem nome drawio" src="https://github.com/user-attachments/assets/b6a48b92-cc0a-4e55-8080-4be2783a1e88" />
+
 
 ## Descrição do Projeto
 
