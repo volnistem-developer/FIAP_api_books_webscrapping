@@ -2,6 +2,7 @@ from src.anticorruption.books_scrape_script import AnticorruptionBooksScraping
 from src.api.service.auth_service import AuthService
 from src.api.service.book_service import BookService
 from src.api.service.category_service import CategoryService
+from src.api.service.ml_service import MLService
 from src.api.service.scrap_service import ScrapService
 from src.api.service.stats_service import StatsService
 from src.api.service.user_service import UserService
@@ -86,6 +87,15 @@ class GetServices():
         application = StatsApplication(domain)
         
         return StatsService(application)
+    
+    def get_ml_service(self):
+        uow = UnityOfWork()
+
+        book_repository = BookRepository(uow)
+        book_domain = BookDomain(book_repository)
+        book_application = BookApplication(book_domain)
+
+        return MLService(book_application)
 
 services = GetServices()
         

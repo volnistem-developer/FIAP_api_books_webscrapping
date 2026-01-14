@@ -30,7 +30,7 @@ def get_by_price_range(min: float, max: float):
 
     return service.get_by_price_range(min, max)
 
-@router.get("/categories", status_code=200)
+@router.get("/categories", status_code=200, response_model=list[CategoryReadDTO])
 @protected()
 def list_all_categories():
     service = services.category_service()

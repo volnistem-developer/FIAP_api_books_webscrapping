@@ -46,3 +46,15 @@ class BookDomain(IBookDomain):
             return self.__repository.get_books_from_title_or_category(title, category)
         except Exception as e:
             raise ServiceError() from e
+        
+    def get_ml_features(self):
+        try:
+            return self.__repository.get_ml_features()
+        except Exception as e:
+            raise ServiceError("Erro ao gerar features de ML") from e
+        
+    def get_ml_training_data(self):
+        try:
+            return self.__repository.get_training_data()
+        except Exception as e:
+            raise ServiceError("Erro ao gerar dados para treinamento") from e
