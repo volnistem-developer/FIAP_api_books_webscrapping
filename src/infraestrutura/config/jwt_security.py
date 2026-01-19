@@ -14,7 +14,7 @@ class JWTSecurity:
     def __init__(self):
         self.__secret = ENV_CONFIG['JWT_SECRET']
         self.__algorithm = ENV_CONFIG['JWT_ALGORITHM']
-        self.__jwt_access_token_expiration_minutes = 15
+        self.__jwt_access_token_expiration_minutes = 60
 
         self.__crypt_context = CryptContext(schemes=['argon2'])
     

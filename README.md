@@ -1,3 +1,8 @@
+## Vídeo de Aprensetação do Projeto e Deploy
+
+Vídeo: https://youtu.be/xlqIcAitvPc
+Deploy: https://books-webscraping.onrender.com/docs
+
 ## Stack do Projeto
 
 - Python
@@ -48,9 +53,8 @@ FIAP_api_books_webscrapping/
 ```
 
 ### Diagrama do Projeto
+
 <img width="1784" height="796" alt="diagrama_projeto" src="https://github.com/user-attachments/assets/7959d6dd-3a14-4251-950e-d7d23f5e80fc" />
-
-
 
 ## Descrição do Projeto
 
