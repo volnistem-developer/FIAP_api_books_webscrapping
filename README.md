@@ -973,3 +973,63 @@ Para executar o projeto localmente em sua máquina utilize o comando:
   "message": "string"
 }
 ```
+
+### ML (Requer autenticação)
+
+#### Features
+
+```http
+  GET /api/v1/ml/features
+```
+### Successful Response - 200
+
+```http
+[
+  {
+    "book_id": 0,
+    "rating": 0,
+    "price_brl": 0,
+    "available": 0,
+    "num_categories": 0
+  }
+]
+```
+
+### Unauthorized - 401 (Se não estiver autenticado)
+
+```http
+{
+  "message": "string"
+}
+```
+
+#### Training Data
+
+```http
+  GET /api/v1/ml/training-data
+```
+### Successful Response - 200
+
+```http
+[
+  {
+    "book_id": 0,
+    "rating": 0,
+    "price_brl": 0,
+    "available": 0,
+    "num_categories": 0,
+    "target": 0
+  }
+]
+```
+
+### Unauthorized - 401 (Se não estiver autenticado)
+
+```http
+{
+  "message": "string"
+}
+```
+
+
+
