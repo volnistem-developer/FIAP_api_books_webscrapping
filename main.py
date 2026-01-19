@@ -1,5 +1,6 @@
 from typing import Callable
 from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
@@ -29,6 +30,16 @@ from src.data.database.db import engine
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 def custom_openapi():
     if app.openapi_schema:
